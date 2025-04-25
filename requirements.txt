@@ -1,0 +1,12 @@
+pandas
+numpy
+requests
+scikit-learn
+xgboost
+lightgbm
+mlflow
+flask
+gunicorn
+matplotlib
+joblib
+jinja2

@@ -1,0 +1,51 @@
+name: CI-CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run ETL & EDA
+      run: |
+        python src/etl.py --api-url "https://api.realestateexample.com/properties" \
+                       --output data/properties.csv
+        python src/eda.py --input data/properties.csv --output reports/eda
+
+    - name: Feature engineering & train
+      run: |
+        python src/feature_engineering.py --input data/properties.csv --output data/features.csv
+        python src/train.py --input data/features.csv --model-output models/best_model.pkl
+
+    - name: Evaluate model
+      run: |
+        python src/evaluate.py --model-path models/best_model.pkl --test-data data/features.csv
+
+    - name: Build Docker image
+      run: |
+        docker build -t real-estate-predictor:latest .
+
+    - name: MLflow logging
+      run: |
+        mlflow run . --no-conda
+
+    - name: Lint & format (optional)
+      run: |
+        flake8 .
+        

@@ -1,0 +1,7 @@
+name: RealEstatePricePredictor
+conda_env: conda.yaml
+entry_points:
+  main:
+    parameters:
+      data_path: {type: str, default: "data/features.csv"}
+    command: "python src/train.py --input {data_path} --model-output models/best_model.pkl"
