@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/fc8784c893ee4794a9413812521be307/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: fc8784c893ee4794a9413812521be307
+run_name: exultant-duck-512
+run_uuid: fc8784c893ee4794a9413812521be307
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745635649398
+status: 1
+tags: []
+user_id: codespace

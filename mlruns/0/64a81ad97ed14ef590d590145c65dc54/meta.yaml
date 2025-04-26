@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/64a81ad97ed14ef590d590145c65dc54/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 64a81ad97ed14ef590d590145c65dc54
+run_name: blushing-bass-21
+run_uuid: 64a81ad97ed14ef590d590145c65dc54
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745630994980
+status: 1
+tags: []
+user_id: codespace

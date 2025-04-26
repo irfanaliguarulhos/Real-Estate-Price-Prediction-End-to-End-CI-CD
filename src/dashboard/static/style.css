@@ -1,0 +1,9 @@
+body {
+    background: #2e2e2e;
+    color: #f0f0f0;
+    font-family: Arial, sans-serif;
+  }
+  .container { max-width: 800px; margin: auto; padding: 20px; }
+  .filters input, .filters select, .filters button { margin: 5px; padding: 10px; border-radius: 4px; border: none; }
+  .filters button { background: #4caf50; color: white; cursor: pointer; }
+  #result { margin-top: 20px; font-size: 1.2em; }

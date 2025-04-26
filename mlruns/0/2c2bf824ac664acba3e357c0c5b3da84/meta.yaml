@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/2c2bf824ac664acba3e357c0c5b3da84/artifacts
+end_time: 1745629601557
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 2c2bf824ac664acba3e357c0c5b3da84
+run_name: nosy-loon-462
+run_uuid: 2c2bf824ac664acba3e357c0c5b3da84
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745629583235
+status: 3
+tags: []
+user_id: codespace

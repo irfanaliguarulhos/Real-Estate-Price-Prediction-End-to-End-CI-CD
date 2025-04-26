@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/2ba6ed8b65d643d9bbfc23259e30e139/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 2ba6ed8b65d643d9bbfc23259e30e139
+run_name: overjoyed-koi-637
+run_uuid: 2ba6ed8b65d643d9bbfc23259e30e139
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745628436169
+status: 1
+tags: []
+user_id: codespace

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Real Estate Dashboard</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Real Estate Price Predictor</h1>
+    <div class="filters">
+      <input id="bedrooms" type="number" placeholder="Bedrooms" />
+      <input id="bathrooms" type="number" placeholder="Bathrooms" />
+      <input id="size" type="number" placeholder="Size (sqm)" />
+      <select id="region">
+        <option value="north">North</option>
+        <option value="south">South</option>
+        <option value="east">East</option>
+        <option value="west">West</option>
+      </select>
+      <button onclick="getPrediction()">Predict</button>
+    </div>
+    <div id="result"></div>
+    <canvas id="priceChart"></canvas>
+  </div>
+  <script>
+    async function getPrediction() {
+      const data = {
+        bedrooms: +document.getElementById('bedrooms').value,
+        bathrooms: +document.getElementById('bathrooms').value,
+        size: +document.getElementById('size').value,
+        region: document.getElementById('region').value
+      };
+      const res = await fetch('/predict', {
+        method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(data)
+      });
+      const json = await res.json();
+      document.getElementById('result').innerText = `Predicted Price: $${json.predicted_price.toFixed(2)}`;
+    }
+  </script>
+</body>
+</html>

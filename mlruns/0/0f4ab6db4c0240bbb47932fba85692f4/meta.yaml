@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/0f4ab6db4c0240bbb47932fba85692f4/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0f4ab6db4c0240bbb47932fba85692f4
+run_name: stately-robin-278
+run_uuid: 0f4ab6db4c0240bbb47932fba85692f4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745635718153
+status: 1
+tags: []
+user_id: codespace
