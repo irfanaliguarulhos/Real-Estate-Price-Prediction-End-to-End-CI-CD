@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/dc2e791ab2364e069f8a37ba9071f30e/artifacts
+end_time: 1745789354058
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: dc2e791ab2364e069f8a37ba9071f30e
+run_name: magnificent-lynx-799
+run_uuid: dc2e791ab2364e069f8a37ba9071f30e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745789335687
+status: 4
+tags: []
+user_id: codespace

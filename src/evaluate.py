@@ -1,83 +1,168 @@
+import os
+import joblib
+import numpy as np
 import argparse
 import pandas as pd
-import joblib
-from sklearn.metrics import mean_squared_error, r2_score
-import os
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.metrics import mean_squared_error
+from sklearn.linear_model import LinearRegression, ElasticNet
+from sklearn.ensemble import RandomForestRegressor
+import xgboost as xgb
+import lightgbm as lgb
+import mlflow
 
-def main(model_path: str, test_data: str):
+def save_model(model, model_path: str, model_name: str):
+    """Save model to disk"""
+    try:
+        os.makedirs(os.path.dirname(model_path), exist_ok=True)
+        print(f"Saving the model to: {model_path}")
+        joblib.dump(model, model_path)
+        print(f"Model {model_name} saved successfully to {model_path}")
+    except Exception as e:
+        raise IOError(f"Error saving model to '{model_path}'. Details: {e}")
+
+def calculate_rmse(y_true, y_pred):
+    """Calculate RMSE score"""
+    mse = mean_squared_error(y_true, y_pred)
+    return np.sqrt(mse)
+
+def encode_categorical_columns(df: pd.DataFrame, target_column: str) -> pd.DataFrame:
     """
-    Evaluate a trained model on test data.
+    Encode categorical columns using binary encoding.
     Args:
-        model_path (str): Path to the trained model file.
-        test_data (str): Path to the test dataset CSV file.
+        df (pd.DataFrame): Input dataframe with categorical columns.
+        target_column (str): Name of the target column.
+    Returns:
+        pd.DataFrame: Dataframe with encoded categorical columns.
     """
-    # Debugging: Print the paths
-    print(f"Model path: {model_path}")
-    print(f"Test data path: {test_data}")
+    categorical_columns = df.select_dtypes(include=['object']).columns
+    if len(categorical_columns) > 0:
+        print(f"Encoding categorical columns: {list(categorical_columns)}")
+        for col in categorical_columns:
+            df[col] = df[col].astype('category').cat.codes
+    return df
 
-    # Check if the model file exists
-    if not os.path.isfile(model_path):
-        raise FileNotFoundError(f"The model file '{model_path}' does not exist. Please check the path.")
+def sanitize_feature_names(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Replace special characters in column names with underscores.
+    Args:
+        df (pd.DataFrame): Input dataframe.
+    Returns:
+        pd.DataFrame: Dataframe with sanitized column names.
+    """
+    df.columns = [col.replace(" ", "_").replace(",", "_").replace("-", "_") for col in df.columns]
+    return df
 
-    # Check if the test data file exists
-    if not os.path.isfile(test_data):
-        raise FileNotFoundError(f"The test data file '{test_data}' does not exist. Please check the path.")
+def main(input_path: str, model_output: str):
+    """
+    Train multiple models on the dataset and save the best model.
+    Args:
+        input_path (str): Path to the processed dataset.
+        model_output (str): Path to save the best model.
+    """
+    # Load and validate data
+    if not os.path.isfile(input_path):
+        raise FileNotFoundError(f"Input file not found: {input_path}")
 
-    # Load the test dataset
-    try:
-        df = pd.read_csv(test_data)
-        print(f"Test dataset loaded successfully with shape: {df.shape}")
-    except Exception as e:
-        raise ValueError(f"Error loading test dataset from {test_data}. Details: {e}")
+    print(f"Loading data from: {input_path}")
+    df = pd.read_csv(input_path)
+    print(f"Dataset loaded with shape: {df.shape}")
 
-    # Ensure the target column 'PRICE' exists (case-sensitive check)
-    target_column = 'PRICE'  # Update this if your target column has a different name
-    if target_column not in df.columns:
-        raise ValueError(f"The target column '{target_column}' is missing from the test dataset.")
+    # Feature engineering - use binary encoding
+    df = encode_categorical_columns(df, 'PRICE')
+    print(f"Dataset shape after encoding: {df.shape}")
 
-    # Split features and target
-    X_test = df.drop(columns=[target_column])
-    y_test = df[target_column]
+    # Sanitize feature names
+    df = sanitize_feature_names(df)
+    print(f"Dataset column names after sanitization: {list(df.columns)}")
 
-    # Load the model
-    try:
-        model = joblib.load(model_path)
-        print(f"Model loaded successfully from {model_path}")
-    except Exception as e:
-        raise ValueError(f"Error loading model from {model_path}. Details: {e}")
+    # Validate target column
+    if 'PRICE' not in df.columns:
+        raise ValueError("Target column 'PRICE' not found in dataset")
 
-    # Make predictions
-    try:
-        preds = model.predict(X_test)
-        print("Predictions generated successfully.")
-    except Exception as e:
-        raise ValueError(f"Error generating predictions. Details: {e}")
+    # Split data
+    X = df.drop(columns=['PRICE'])
+    y = df['PRICE']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    print(f"Training set: {X_train.shape}, Test set: {X_test.shape}")
 
-    # Calculate metrics
-    try:
-        rmse = mean_squared_error(y_test, preds, squared=False)  # RMSE
-        r2 = r2_score(y_test, preds)  # R² Score
-        print(f"Evaluation Metrics:")
-        print(f"RMSE: {rmse:.2f}")
-        print(f"R2 Score: {r2:.2f}")
-    except Exception as e:
-        raise ValueError(f"Error calculating evaluation metrics. Details: {e}")
+    # Define models with optimized parameters
+    models = {
+        'LinearRegression': (LinearRegression(), {}),
+        'ElasticNet': (
+            ElasticNet(random_state=42), 
+            {'alpha': [0.1, 1.0], 'l1_ratio': [0.2, 0.8]}
+        ),
+        'RandomForest': (
+            RandomForestRegressor(random_state=42), 
+            {'n_estimators': [100], 'max_depth': [10]}
+        ),
+        'XGBoost': (
+            xgb.XGBRegressor(random_state=42), 
+            {'n_estimators': [100], 'learning_rate': [0.1]}
+        ),
+        'LightGBM': (
+            lgb.LGBMRegressor(random_state=42), 
+            {'n_estimators': [100], 'learning_rate': [0.1]}
+        )
+    }
+
+    # Train and evaluate models
+    best_model, best_score, best_name = None, np.inf, None
+    
+    with mlflow.start_run():
+        for name, (model, params) in models.items():
+            print(f"\nTraining {name} with parameters: {params}")
+            grid = GridSearchCV(
+                model, 
+                params, 
+                cv=3, 
+                scoring='neg_mean_squared_error',
+                n_jobs=2,  # Reduce parallelism
+                verbose=0,
+                error_score='raise'  # Raise errors for debugging
+            )
+            
+            try:
+                grid.fit(X_train, y_train)
+                preds = grid.predict(X_test)
+                rmse = calculate_rmse(y_test, preds)
+                
+                print(f"{name} RMSE: {rmse:.2f}")
+                mlflow.log_metric(f"{name}_rmse", rmse)
+
+                if rmse < best_score:
+                    best_score = rmse
+                    best_model = grid.best_estimator_
+                    best_name = name
+            except Exception as e:
+                print(f"Error training {name}: {e}")
+                continue
+
+        # Log best model
+        if best_model is None:
+            raise ValueError("No model was successfully trained")
+            
+        mlflow.log_param('best_model', best_name)
+        mlflow.log_metric('best_rmse', best_score)
+        print(f"\nBest model: {best_name} (RMSE: {best_score:.2f})")
+
+        # Save the best model
+        save_model(best_model, model_output, best_name)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Evaluate a trained model on test data.")
+    parser = argparse.ArgumentParser(description="Train models on the processed dataset.")
     parser.add_argument(
-        '--model-path',
+        '--input',
         type=str,
-        default='/workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/models/best_model.pkl',  # Default model path
-        help='Path to the trained model file (default: /workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/models/best_model.pkl)'
+        default='src/processed/NY-House-Features.csv',
+        help='Path to the processed dataset'
     )
     parser.add_argument(
-        '--test-data',
+        '--model-output',
         type=str,
-        default='/workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/src/processed/NY-House-Features.csv',  # Default dataset path
-        help='Path to the test dataset CSV file (default: /workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/src/processed/NY-House-Features.csv)'
+        default='models/best_model.pkl',
+        help='Path to save the best model'
     )
     args = parser.parse_args()
-
-    # Call the main function with the provided arguments
-    main(args.model_path, args.test_data)
+    main(args.input, args.model_output)

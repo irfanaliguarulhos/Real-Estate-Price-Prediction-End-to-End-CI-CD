@@ -66,15 +66,25 @@ def main(input_path: str, model_output: str):
 
     # Split into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    print(f"Dataset shape: {df.shape}")
     print(f"Training set size: {X_train.shape}, Testing set size: {X_test.shape}")
 
     # Define models and hyperparameters
     models = {
         'LinearRegression': (LinearRegression(), {}),
         'ElasticNet': (ElasticNet(), {'alpha': [0.1, 1.0, 10.0]}),
-        'RandomForest': (RandomForestRegressor(random_state=42), {'n_estimators': [100, 200], 'max_depth': [10, 20]}),
-        'XGBoost': (xgb.XGBRegressor(random_state=42, objective='reg:squarederror'), {'n_estimators': [100, 200], 'learning_rate': [0.01, 0.1]}),
-        'LightGBM': (lgb.LGBMRegressor(random_state=42), {'n_estimators': [100, 200], 'learning_rate': [0.01, 0.1]})
+        'RandomForest': (
+            RandomForestRegressor(random_state=42),
+            {'n_estimators': [100, 200], 'max_depth': [10, 20]}
+        ),
+        'XGBoost': (
+            xgb.XGBRegressor(random_state=42, objective='reg:squarederror'),
+            {'n_estimators': [100, 200], 'learning_rate': [0.01, 0.1]}
+        ),
+        'LightGBM': (
+            lgb.LGBMRegressor(random_state=42),
+            {'n_estimators': [100, 200], 'learning_rate': [0.01, 0.1]}
+        )
     }
 
     # Start MLflow run
@@ -102,17 +112,29 @@ def main(input_path: str, model_output: str):
     mlflow.log_metric('best_rmse', best_score)
     mlflow.end_run()
 
+    # Check if a best model was selected
+    if best_model is None:
+        print("Debug: No best model was selected.")
+        raise ValueError("No best model was selected. Ensure that the models are being trained and evaluated correctly.")
+    else:
+        print(f"Debug: Best model selected: {best_name} with RMSE: {best_score}")
+
+    # Print the best model details
+    print(f"Best model: {best_model}")
+    print(f"Best score (RMSE): {best_score}")
+    print(f"Best model name: {best_name}")
+
     # Save the best model
     try:
         # Ensure the directory exists
         os.makedirs(os.path.dirname(model_output), exist_ok=True)
         print(f"Saving the best model to: {model_output}")
         
-        # Save the model
+        # Save the model using joblib
         joblib.dump(best_model, model_output)
         print(f"Best model ({best_name}) saved to {model_output}")
     except Exception as e:
-        raise IOError(f"Error saving the best model to {model_output}. Details: {e}")
+        raise IOError(f"Error saving the best model to '{model_output}'. Details: {e}")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Train models on the processed dataset.")
@@ -130,5 +152,6 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     main(args.input, args.model_output)
+
 
 

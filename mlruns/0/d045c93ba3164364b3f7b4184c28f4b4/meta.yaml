@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/d045c93ba3164364b3f7b4184c28f4b4/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d045c93ba3164364b3f7b4184c28f4b4
+run_name: capricious-ant-624
+run_uuid: d045c93ba3164364b3f7b4184c28f4b4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745787639803
+status: 1
+tags: []
+user_id: codespace

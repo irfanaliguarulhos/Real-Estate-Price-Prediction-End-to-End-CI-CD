@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/a8caad4e06504222bd2f3fd244b9ed2c/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: a8caad4e06504222bd2f3fd244b9ed2c
+run_name: loud-panda-104
+run_uuid: a8caad4e06504222bd2f3fd244b9ed2c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745787549563
+status: 1
+tags: []
+user_id: codespace
