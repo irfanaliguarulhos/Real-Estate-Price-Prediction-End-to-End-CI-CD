@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/9aa34bf4cde34ed6bb23295fcc7d6129/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 9aa34bf4cde34ed6bb23295fcc7d6129
+run_name: skillful-mink-155
+run_uuid: 9aa34bf4cde34ed6bb23295fcc7d6129
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745635574471
+status: 1
+tags: []
+user_id: codespace

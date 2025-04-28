@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/c07628735d89463ea5b75a9dc617839a/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c07628735d89463ea5b75a9dc617839a
+run_name: debonair-stoat-841
+run_uuid: c07628735d89463ea5b75a9dc617839a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745636925035
+status: 1
+tags: []
+user_id: codespace

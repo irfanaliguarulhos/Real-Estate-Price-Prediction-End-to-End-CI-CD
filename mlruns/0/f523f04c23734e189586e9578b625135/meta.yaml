@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/f523f04c23734e189586e9578b625135/artifacts
+end_time: 1745789931927
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: f523f04c23734e189586e9578b625135
+run_name: fearless-bee-109
+run_uuid: f523f04c23734e189586e9578b625135
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745789693185
+status: 4
+tags: []
+user_id: codespace

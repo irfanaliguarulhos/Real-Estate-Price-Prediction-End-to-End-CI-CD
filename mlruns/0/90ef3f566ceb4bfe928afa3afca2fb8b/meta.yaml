@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/Real-Estate-Price-Prediction-End-to-End-CI-CD/mlruns/0/90ef3f566ceb4bfe928afa3afca2fb8b/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 90ef3f566ceb4bfe928afa3afca2fb8b
+run_name: chill-ant-722
+run_uuid: 90ef3f566ceb4bfe928afa3afca2fb8b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745629227030
+status: 1
+tags: []
+user_id: codespace
