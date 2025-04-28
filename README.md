@@ -4,6 +4,65 @@
 
 An end-to-end data science pipeline for predicting real estate prices using free APIs.
 
+## 1. Flowchart
+```text
++-----------------+    +---------+    +----------------+    +--------------------------+
+|  Data Source    | -> |  ETL    | -> | Data Warehouse | -> | Feature Engineering &    |
+| (Free Real      |    | (src/   |    | (data/raw &    |    | EDA (src/feature_       |
+| Estate API)     |    | etl.py) |    |  processed)    |    | engineering.py)         |
++-----------------+    +---------+    +----------------+    +-----------+--------------+
+                                                                            |
+                                                                            v
+                                                                     +--------------+   +----------------+
+                                                                     | Model Training|->| Evaluation &    |
+                                                                     | (src/model.py)|   | Testing (src/   |
+                                                                     +--------------+   |evaluate.py)    |
+                                                                                         +----------------+
+                                                                                                  |
+                                                                                                  v
+                                                                                     +---------------------+   +---------------------+
+                                                                                     | MLflow Registry &   |->| Deployment &        |
+                                                                                     | Model Packaging     |   | Dashboard (src/     |
+                                                                                     | (models/, mlflow)   |   | dashboard/)         |
+                                                                                     +---------------------+   +---------------------+
+                                                                                                  |
+                                                                                                  v
+                                                                                     +---------------------+
+                                                                                     | CI/CD (GitHub       |
+                                                                                     | Actions, Docker)    |
+                                                                                     +---------------------+
+````
+
+## 2. Directory Structure
+
+````text
+├── data/
+│   ├── raw/                # Raw API extracts
+│   └── processed/          # Cleaned & feature-engineered data
+├── src/
+│   ├── etl.py              # API extraction pipeline
+│   ├── feature_engineering.py
+│   ├── model.py            # Training & MLflow logging
+│   ├── evaluate.py         # Model evaluation scripts
+│   └── dashboard/
+│       ├── app.py          # Flask app for predictions & dashboard
+│       └── templates/
+│           └── index.html  # Dark-theme HTML dashboard
+├── mlflow/                 # MLflow tracking server config (optional)
+├── tests/
+│   ├── test_etl.py
+│   └── test_model.py
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml       # CI/CD pipeline definition
+├── Dockerfile              # Containerize app & API
+├── docker-compose.yml      # Local orchestration
+├── requirements.txt        # Python dependencies
+└── README.md               # Project overview & instructions
+````
+
+
+
 ## Components
 
 - **ETL**: Fetch and store raw data (`src/etl.py`).
