@@ -39,25 +39,31 @@ class ModelServer:
     def predict(self, data):
         """Make prediction"""
         try:
+            logger.info(f"Received input data: {data}")
             df = pd.DataFrame([data])
-            
+            logger.info(f"Input DataFrame: {df}")
+
             # Preprocess
-            df[['bedrooms','bathrooms','size']] = self.imputer.transform(
-                df[['bedrooms','bathrooms','size']]
+            df[['bedrooms', 'bathrooms', 'size']] = self.imputer.transform(
+                df[['bedrooms', 'bathrooms', 'size']]
             )
+            logger.info(f"After imputation: {df}")
+
             cat = self.encoder.transform(df[['region']])
             cat_cols = self.encoder.get_feature_names_out(['region'])
-            
             df = pd.concat([
-                df.drop(columns=['region']), 
+                df.drop(columns=['region']),
                 pd.DataFrame(cat, columns=cat_cols, index=df.index)
             ], axis=1)
-            
-            df[['bedrooms','bathrooms','size']] = self.scaler.transform(
-                df[['bedrooms','bathrooms','size']]
+            logger.info(f"After encoding: {df}")
+
+            df[['bedrooms', 'bathrooms', 'size']] = self.scaler.transform(
+                df[['bedrooms', 'bathrooms', 'size']]
             )
+            logger.info(f"After scaling: {df}")
 
             pred = self.model.predict(df)[0]
+            logger.info(f"Prediction: {pred}")
             return float(pred)
         except Exception as e:
             logger.error(f"Prediction failed: {str(e)}")
@@ -96,6 +102,11 @@ def predict():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
+    # Ensure required environment variables are set with defaults
+    os.environ.setdefault('FLASK_HOST', '0.0.0.0')
+    os.environ.setdefault('FLASK_PORT', '5000')
+    os.environ.setdefault('FLASK_ENV', 'production')
+
     # Get configuration from environment variables
     host = os.getenv('FLASK_HOST', '0.0.0.0')
     port = int(os.getenv('FLASK_PORT', 5000))
